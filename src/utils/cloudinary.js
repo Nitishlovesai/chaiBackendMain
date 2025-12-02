@@ -14,15 +14,20 @@ cloudinary.config({
 const uploadOnCloudinary = async (localFilePath) =>{
     try {
         if(!localFilePath){
-            return null;
-            //upload the file on cloudninary
-            const response = await cloudinary.uploader.upload(localFilePath , {resource_type:"auto"})
+            return null      
+        }
+        //upload the file on cloudninary
+        const response = await cloudinary.uploader.upload(localFilePath , {resource_type:"auto"})
 
             //file is uploaded successfully
-            console.log(`file is uploaded on cloudinary`, (response.url));
+            //console.log(`file is uploaded on cloudinary`, (response.url));
+            fs.unlinkSync(localFilePath)
             return response;
-            
-        }
+
+
+
+
+
     } catch (error) {
         fs.unlinkSync(localFilePath) // remove the locally save temporary file as the upload operation gjot failed
 
