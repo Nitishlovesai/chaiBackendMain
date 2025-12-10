@@ -307,10 +307,20 @@ const updateUserAvatar = asyncHandler(async(req, res)=>{
     if (!avatarLocalPath) {
         throw new ApiError(400, "Avatar is missing")
     }
+
+    const oldUser = User.findById(req.user?._id)
+    const oldAvatarUrl = oldUser?.avatar
+
     const avatar =await uploadOnCloudinary(avatarLocalPath)
 
     if(!avatar.url){
         throw new ApiError(400, "Error while Uploading avatar")
+    }
+
+    //deleting the old image
+    if(oldAvatarUrl){
+        const publicId = extractPublicId(oldAvatarUrl)
+        await cloudinary.uploader.destroy(publicId)
     }
 
     const user = await User.findByIdAndUpdate(
@@ -366,6 +376,6 @@ export {registerUser,
     getCurrentUser,
     updateAccountDetails,
     updateUserAvatar,
-    updateUserAvatar
+    updateUserCoverImage
 
 }
